@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="726" viewBox="0 0 880 726" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="880" height="726" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="32" y="44" font-size="22" font-weight="800" fill="#0f172a">The same talk of 21 slides in four tools</text>
+<text x="848" y="44" font-size="13" text-anchor="end" fill="#64748b">31 October 2026, median of 5 runs</text>
+<rect x="32" y="68" width="12" height="12" rx="3" fill="#16a34a"/><text x="50" y="79" font-size="12" fill="#64748b">slidemachina is the best</text><rect x="222" y="68" width="12" height="12" rx="3" fill="#ca8a04"/><text x="240" y="79" font-size="12" fill="#64748b">on par</text><rect x="412" y="68" width="12" height="12" rx="3" fill="#dc2626"/><text x="430" y="79" font-size="12" fill="#64748b">slidemachina is behind</text>
+<rect x="32" y="96" width="396" height="178" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="52" y="130" font-size="15" font-weight="700" fill="#0f172a">First slide on screen</text>
+<text x="408" y="130" font-size="12" text-anchor="end" fill="#64748b">lower is better</text>
+<text x="52" y="163" font-size="13" font-weight="700" fill="#0f172a">slidemachina</text><rect x="156" y="150" width="141.3" height="16" rx="4" fill="#ca8a04"/><text x="408" y="163" font-size="13" font-weight="700" text-anchor="end" fill="#ca8a04">217 ms</text>
+<text x="52" y="193" font-size="13" font-weight="400" fill="#0f172a">reveal.js</text><rect x="156" y="180" width="135.0" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="193" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">207 ms</text>
+<text x="52" y="223" font-size="13" font-weight="400" fill="#0f172a">Slidev</text><rect x="156" y="210" width="168.0" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="223" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">258 ms</text>
+<text x="52" y="253" font-size="13" font-weight="400" fill="#0f172a">open-slide</text><rect x="156" y="240" width="166.7" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="253" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">256 ms</text>
+<rect x="452" y="96" width="396" height="178" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="472" y="130" font-size="15" font-weight="700" fill="#0f172a">JavaScript sent, gzip</text>
+<text x="828" y="130" font-size="12" text-anchor="end" fill="#64748b">lower is better</text>
+<text x="472" y="163" font-size="13" font-weight="700" fill="#0f172a">slidemachina</text><rect x="576" y="150" width="168.0" height="16" rx="4" fill="#dc2626"/><text x="828" y="163" font-size="13" font-weight="700" text-anchor="end" fill="#dc2626">558 KB</text>
+<text x="472" y="193" font-size="13" font-weight="400" fill="#0f172a">reveal.js</text><rect x="576" y="180" width="104.8" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="193" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">348 KB</text>
+<text x="472" y="223" font-size="13" font-weight="400" fill="#0f172a">Slidev</text><rect x="576" y="210" width="66.6" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="223" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">221 KB</text>
+<text x="472" y="253" font-size="13" font-weight="400" fill="#0f172a">open-slide</text><rect x="576" y="240" width="139.2" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="253" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">462 KB</text>
+<rect x="32" y="294" width="396" height="178" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="52" y="328" font-size="15" font-weight="700" fill="#0f172a">Memory after load</text>
+<text x="408" y="328" font-size="12" text-anchor="end" fill="#64748b">lower is better</text>
+<text x="52" y="361" font-size="13" font-weight="700" fill="#0f172a">slidemachina</text><rect x="156" y="348" width="97.2" height="16" rx="4" fill="#16a34a"/><text x="408" y="361" font-size="13" font-weight="700" text-anchor="end" fill="#16a34a">4.7 MB</text>
+<text x="52" y="391" font-size="13" font-weight="400" fill="#0f172a">reveal.js</text><rect x="156" y="378" width="153.2" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="391" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">7.4 MB</text>
+<text x="52" y="421" font-size="13" font-weight="400" fill="#0f172a">Slidev</text><rect x="156" y="408" width="106.0" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="421" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">5.1 MB</text>
+<text x="52" y="451" font-size="13" font-weight="400" fill="#0f172a">open-slide</text><rect x="156" y="438" width="168.0" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="451" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">8.1 MB</text>
+<rect x="452" y="294" width="396" height="178" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="472" y="328" font-size="15" font-weight="700" fill="#0f172a">Dev server to first slide</text>
+<text x="828" y="328" font-size="12" text-anchor="end" fill="#64748b">lower is better</text>
+<text x="472" y="361" font-size="13" font-weight="700" fill="#0f172a">slidemachina</text><rect x="576" y="348" width="74.1" height="16" rx="4" fill="#dc2626"/><text x="828" y="361" font-size="13" font-weight="700" text-anchor="end" fill="#dc2626">1.55 s</text>
+<text x="472" y="391" font-size="13" font-weight="400" fill="#0f172a">reveal.js</text><rect x="576" y="378" width="28.5" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="391" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">0.59 s</text>
+<text x="472" y="421" font-size="13" font-weight="400" fill="#0f172a">Slidev</text><rect x="576" y="408" width="168.0" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="421" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">3.51 s</text>
+<text x="472" y="451" font-size="13" font-weight="400" fill="#0f172a">open-slide</text><rect x="576" y="438" width="129.1" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="451" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">2.69 s</text>
+<rect x="32" y="492" width="396" height="178" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="52" y="526" font-size="15" font-weight="700" fill="#0f172a">Production build</text>
+<text x="408" y="526" font-size="12" text-anchor="end" fill="#64748b">lower is better</text>
+<text x="52" y="559" font-size="13" font-weight="700" fill="#0f172a">slidemachina</text><rect x="156" y="546" width="62.0" height="16" rx="4" fill="#dc2626"/><text x="408" y="559" font-size="13" font-weight="700" text-anchor="end" fill="#dc2626">0.85 s</text>
+<text x="52" y="589" font-size="13" font-weight="400" fill="#0f172a">reveal.js</text><rect x="156" y="576" width="30.4" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="589" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">0.42 s</text>
+<text x="52" y="619" font-size="13" font-weight="400" fill="#0f172a">Slidev</text><rect x="156" y="606" width="168.0" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="619" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">2.31 s</text>
+<text x="52" y="649" font-size="13" font-weight="400" fill="#0f172a">open-slide</text><rect x="156" y="636" width="69.6" height="16" rx="4" fill="#cbd5e1"/><text x="408" y="649" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">0.96 s</text>
+<rect x="452" y="492" width="396" height="178" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="472" y="526" font-size="15" font-weight="700" fill="#0f172a">node_modules</text>
+<text x="828" y="526" font-size="12" text-anchor="end" fill="#64748b">lower is better</text>
+<text x="472" y="559" font-size="13" font-weight="700" fill="#0f172a">slidemachina</text><rect x="576" y="546" width="70.9" height="16" rx="4" fill="#dc2626"/><text x="828" y="559" font-size="13" font-weight="700" text-anchor="end" fill="#dc2626">197 MB</text>
+<text x="472" y="589" font-size="13" font-weight="400" fill="#0f172a">reveal.js</text><rect x="576" y="576" width="14.3" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="589" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">40 MB</text>
+<text x="472" y="619" font-size="13" font-weight="400" fill="#0f172a">Slidev</text><rect x="576" y="606" width="168.0" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="619" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">467 MB</text>
+<text x="472" y="649" font-size="13" font-weight="400" fill="#0f172a">open-slide</text><rect x="576" y="636" width="75.0" height="16" rx="4" fill="#cbd5e1"/><text x="828" y="649" font-size="13" font-weight="400" text-anchor="end" fill="#64748b">208 MB</text>
+<text x="32" y="702" font-size="12" fill="#64748b">slidemachina 1.2.0 · reveal.js 6.0.2 · Slidev 53.0.0 · open-slide 2.3.1 · latest versions from npm · GitHub Actions ubuntu-latest</text>
+</svg>
