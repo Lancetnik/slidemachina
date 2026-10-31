@@ -5,6 +5,8 @@ import sharp from "sharp";
 import { openWorkingTabs, shareWorkBetweenTabs, shootPageClip } from "./chrome-sharing.ts";
 import { addressPrintView, printWaitLimit } from "./pdf-printing.ts";
 import { escapeHtml } from "./html-escaping.ts";
+import { readNativeMotionOptions } from "./hyperframes-motion-options.ts";
+import { exportHyperframesNativeMotion } from "./hyperframes-native-motion.ts";
 import type { Browser, Page } from "playwright-core";
 import type { SharedChrome } from "./chrome-sharing.ts";
 
@@ -81,6 +83,8 @@ function readHyperframesDurations(projectFolder: string, frameCount: number): nu
 }
 
 export async function exportHyperframes(pagePath: string, projectFolder: string, outputFolder: string, printsHidden: boolean, sharedChrome: SharedChrome): Promise<void> {
+  const motionOptions = readNativeMotionOptions(projectFolder);
+  if (motionOptions) return exportHyperframesNativeMotion(pagePath, projectFolder, outputFolder, printsHidden, sharedChrome, motionOptions, readHyperframesDurations);
   const slidePictures = await shootSlidePictures(pagePath, sharedChrome, true, printsHidden);
   const frameDurations = readHyperframesDurations(projectFolder, slidePictures.length);
   const firstPicture = slidePictures[0];

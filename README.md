@@ -244,7 +244,24 @@ Each frame lasts 5 seconds by default. To set the timing, put `hyperframes.json`
 
 One duration in seconds per frame, in presentation order, including the initial state before the first step. The array must match the frame count, and every duration must be positive and finite. The build reports the expected count if they differ. Hidden slides are included unless you pass `--no-hidden`.
 
-This export uses the print view: transitions are cut, video, GIF and 3D become still frames, and iframe backgrounds are omitted. Text and diagrams are part of the images. Add music, narration and other scenes in HyperFrames. Rebuilding replaces the output folder, so copy it before editing it there.
+By default, this export uses the print view: transitions are cut, video, GIF and 3D become still frames, and iframe backgrounds are omitted. Text and diagrams are part of the images. Add music, narration and other scenes in HyperFrames. Rebuilding replaces the output folder, so copy it before editing it there.
+
+To keep native slide transitions, including morphing words, code and cards, add `motion: "native"` to `hyperframes.json`:
+
+```json
+{
+  "durations": [2, 3, 5],
+  "motion": "native",
+  "fps": 30,
+  "transitionDuration": 0.6
+}
+```
+
+Build with the same `--hyperframes` command. Chrome runs the presentation's own transitions and captures lossless WebP frames. HyperFrames seeks those images by frame number, so seeking backward shows the same pictures. `motion.json` records the states, frame timings and captured animation names. No new dependencies or external rendering services are needed.
+
+`durations` still has one entry per slide and revealed step, including the state before the first step. A transition occupies the start of the incoming state's duration; it does not extend the video. Each state needs at least one frame, and at least one hold frame must remain after a transition. Cumulative timings are rounded to the nearest output frame. `fps` defaults to 30 and accepts whole numbers from 1 to 60. Omit `transitionDuration` to use each transition's native duration. Render HyperFrames at the same frame rate, for example `npx hyperframes render dist/my-talk-hyperframes --fps 30`.
+
+Native motion supports static slide content: text, code, cards, pictures and DOM diagrams. Animations between steps of the same slide are not captured; steps remain still states. Video, iframe and 3D content are rejected. Animated pictures, custom timers and endless animations are outside this mode's capture guarantees. Transitions are baked into images, so edit the source presentation and rebuild to change them. More transitions and higher frame rates increase export time and asset size. Omit `motion` or set it to `"still"` to use the default export.
 
 ## Your own theme
 
