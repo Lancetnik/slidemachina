@@ -1,4 +1,8 @@
+import { createElement, lazy, Suspense, type ComponentType } from "react";
 import type { StepEffect } from "./slide-steps/step-attributes.ts";
+import type { QRProperties } from "./content-blocks/qr-block/qr-component.tsx";
+
+const QRComponent = lazy(() => import("./content-blocks/qr-block/qr-component.tsx").then((qrModule) => ({ default: qrModule.QR })));
 
 export { Presentation, type PresentationPosition, type PresentationProperties } from "./presentation-core/presentation-component.tsx";
 export type { AspectRatio } from "../shared-between-runtimes/canvas-size.js";
@@ -9,10 +13,12 @@ export { Code, type CodeProperties } from "./content-blocks/code-block/code-comp
 export { Image, type ImageFloat, type ImageProperties } from "./content-blocks/image-component.tsx";
 export { Video, type VideoProperties } from "./content-blocks/video-component.tsx";
 export type { MediaFit } from "./content-blocks/media-frame.tsx";
-export { QR, type QRProperties } from "./content-blocks/qr-block/qr-component.tsx";
+export type { QRProperties } from "./content-blocks/qr-block/qr-component.tsx";
 export type { QRCorrection } from "./content-blocks/qr-block/qr-module-shapes.ts";
 export { Meme, type MemeProperties } from "./content-blocks/meme-block/meme-component.tsx";
 export { Diagram, type DiagramProperties } from "./diagram-blocks/diagram-component.tsx";
+const pendingContent = createElement("div", { "data-print-pending": "" });
+export const QR: ComponentType<QRProperties> = (qrProperties) => createElement(Suspense, { fallback: pendingContent }, createElement(QRComponent, qrProperties));
 export {
   Arrow,
   Box,

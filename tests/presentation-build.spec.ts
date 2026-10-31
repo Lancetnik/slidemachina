@@ -180,10 +180,12 @@ test("сборка: один HTML-файл листается без серве�
       expect(mainModuleText.includes("org.eclipse.elk"), "ELK в основном модуле").toBe(false);
       expect(agentationTraces.test(mainModuleText), "agentation в основном модуле").toBe(false);
       expect(mainModuleText.includes("THREE.WebGLRenderer"), "three.js в основном модуле").toBe(false);
+      expect(mainModuleText.includes("data-qr-logo"), "QR в основном модуле").toBe(false);
       // The engine's scene and the demo's cube both load three.js on demand, so the bundler gives it a file of its own.
       const separateScriptNames = assetNames.filter((assetName) => assetName.endsWith(".js") && assetName !== mainModuleName);
       const separateScriptTexts = await Promise.all(separateScriptNames.map((assetName) => readFile(path.join(assetFolder, assetName), "utf8")));
       expect(separateScriptTexts.some((scriptText) => scriptText.includes("THREE.WebGLRenderer")), "three.js в своём файле").toBe(true);
+      expect(separateScriptTexts.some((scriptText) => scriptText.includes("data-qr-logo")), "QR в своём файле").toBe(true);
       for (const assetName of assetNames) {
         const assetText = await readFile(path.join(assetFolder, assetName), "latin1");
         expect(editorTraces.test(assetText), `редактор в ${assetName}`).toBe(false);

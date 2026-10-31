@@ -35,13 +35,13 @@ async function expectThemeCascade(page: Page, ownSectionBackground: string) {
   expect(await readThemeVariable(page, "--section-background"), "своя тема сильнее бренда").toBe(ownSectionBackground);
 }
 
-async function runFailingCommand(commandArguments: string[]) {
+async function runFailingCommand(commandArguments: string[], includeErrorOutput = true) {
   const commandFailure = await runCommand(process.execPath, [commandLineScript, ...commandArguments]).then(
     () => undefined,
     (commandError: { code: number; stdout: string; stderr: string }) => commandError,
   );
   expect(commandFailure?.code, commandArguments.join(" ")).toBe(1);
-  return `${commandFailure!.stdout}${commandFailure!.stderr}`;
+  return `${commandFailure!.stdout}${includeErrorOutput ? commandFailure!.stderr : ""}`;
 }
 
 // Works on a copy outside the repository, without node_modules, opened through a link as macOS opens /tmp.
@@ -169,7 +169,7 @@ test("репозиторий презентаций: список с облож�
     });
 
     await test.step("slidemachina check: замечания по каждой презентации, в JSON — с местом и правилом", async () => {
-      const checkReport = JSON.parse(await runFailingCommand(["check", copyFolder, "--json"])) as { file: string; rule: string; line: number }[];
+      const checkReport = JSON.parse(await runFailingCommand(["check", copyFolder, "--json"], false)) as { file: string; rule: string; line: number }[];
       // The demo is a catalogue of features: more sections than a talk should have.
       expect(checkReport.find(({ rule }) => rule === "manySections")?.file).toContain(demoFolderName);
       expect(checkReport.filter(({ file }) => !file.includes(demoFolderName)), "доклады примеров по правилам").toEqual([]);
