@@ -2,10 +2,10 @@ import { styleText } from "node:util";
 import { cancel, isCancel, password, select } from "@clack/prompts";
 import { commandLineTexts } from "./command-line-texts.ts";
 
-export type BuildVariant = "html" | "protected" | "folder" | "zip" | "pdf" | "pdf-steps" | "pptx";
-export type BuildFlags = { html?: boolean, protected?: boolean, folder?: boolean, zip?: boolean, pdf?: boolean, steps?: boolean, hidden?: boolean, pptx?: boolean, out?: string };
+export type BuildVariant = "html" | "protected" | "folder" | "zip" | "pdf" | "pdf-steps" | "pptx" | "hyperframes";
+export type BuildFlags = { html?: boolean, protected?: boolean, folder?: boolean, zip?: boolean, pdf?: boolean, steps?: boolean, hidden?: boolean, pptx?: boolean, hyperframes?: boolean, out?: string };
 
-const buildVariantNames: BuildVariant[] = ["html", "protected", "folder", "zip", "pdf", "pdf-steps", "pptx"];
+const buildVariantNames: BuildVariant[] = ["html", "protected", "folder", "zip", "pdf", "pdf-steps", "pptx", "hyperframes"];
 const fileVariantNames = ["html", "protected", "folder", "zip"] as const;
 
 // Flags combine for CI: --html --pdf --pptx builds all three; --steps alone means a PDF by steps.
@@ -13,6 +13,7 @@ export function pickFlaggedVariants(commandOptions: BuildFlags): BuildVariant[] 
   const flaggedVariants: BuildVariant[] = fileVariantNames.filter((variantName) => commandOptions[variantName]);
   if (commandOptions.pdf || commandOptions.steps) flaggedVariants.push(commandOptions.steps ? "pdf-steps" : "pdf");
   if (commandOptions.pptx) flaggedVariants.push("pptx");
+  if (commandOptions.hyperframes) flaggedVariants.push("hyperframes");
   return flaggedVariants;
 }
 

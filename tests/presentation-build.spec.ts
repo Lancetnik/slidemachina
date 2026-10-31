@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { createServer, type ServerResponse } from "node:http";
-import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -50,6 +50,64 @@ function countPrintedPages(page: Page) {
     return document.querySelectorAll("[data-print-page]").length;
   });
 }
+
+test("HyperFrames: сборка шагов, расписание, формат кадра и проверка длительностей", async ({ page }) => {
+  test.setTimeout(120_000);
+  const repositoryFolder = await mkdtemp(path.join(examplesFolder, "hyperframes-test-"));
+  const scratchFolder = path.join(repositoryFolder, "sample-talk");
+  const outputFolder = await mkdtemp(path.join(os.tmpdir(), "slidemachina-hyperframes-"));
+  const projectName = path.basename(scratchFolder);
+  const compositionFolder = path.join(outputFolder, `${projectName}-hyperframes`);
+  try {
+    await mkdir(scratchFolder);
+    await writeFile(path.join(scratchFolder, "index.tsx"), `
+import { Presentation, Slide } from "slidemachina";
+export default <Presentation aspectRatio="4:3"><Slide><h1>First &amp; frame</h1><ul data-steps><li>First step</li><li>Second step</li></ul></Slide><Slide hidden><h1>Hidden frame</h1></Slide><Slide><h1>Last frame</h1></Slide></Presentation>;
+`);
+    await writeFile(path.join(scratchFolder, "hyperframes.json"), JSON.stringify({ durations: [1, 2, 3, 4] }));
+    await runCommand(process.execPath, [commandLineScript, "build", scratchFolder, "--hyperframes", "--no-hidden", "--out", outputFolder]).catch((commandError) => { throw new Error(`${commandError.stdout}\n${commandError.stderr}`); });
+    await page.goto(pathToFileURL(path.join(compositionFolder, "index.html")).href);
+    const compositionRoot = page.locator("[data-composition-id]");
+    await expect(compositionRoot).toHaveAttribute("data-width", "1440");
+    await expect(compositionRoot).toHaveAttribute("data-height", "1080");
+    await expect(compositionRoot).toHaveAttribute("data-duration", "10");
+    const frameClips = page.locator("img.clip");
+    await expect(frameClips).toHaveCount(4);
+    expect(await frameClips.evaluateAll((clipImages) => clipImages.map((clipImage) => [clipImage.getAttribute("data-start"), clipImage.getAttribute("data-duration")]))).toEqual([["0", "1"], ["1", "2"], ["3", "3"], ["6", "4"]]);
+    expect(await frameClips.evaluateAll(async (clipImages) => Promise.all(clipImages.map(async (clipImage) => {
+      const frameImage = clipImage as HTMLImageElement;
+      await frameImage.decode();
+      return [frameImage.naturalWidth, frameImage.naturalHeight, frameImage.alt];
+    })))).toEqual([[1440, 1080, "First & frame"], [1440, 1080, "First & frame"], [1440, 1080, "First & frame"], [1440, 1080, "Last frame"]]);
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: 7 } })));
+    await expect(frameClips.nth(3)).toBeVisible();
+    await expect(frameClips.nth(0)).toBeHidden();
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("hf-seek", { detail: { time: 0.5 } })));
+    await expect(frameClips.nth(0)).toBeVisible();
+    await expect(frameClips.nth(3)).toBeHidden();
+    for (const invalidSchedule of ['{"durations":[1,2,0,4]}', '{"durations":[1,2,3]}', "{broken"]) {
+      await writeFile(path.join(scratchFolder, "hyperframes.json"), invalidSchedule);
+      await expect(runCommand(process.execPath, [commandLineScript, "build", scratchFolder, "--hyperframes", "--no-hidden", "--out", outputFolder])).rejects.toMatchObject({ stdout: expect.stringContaining("hyperframes.json") });
+    }
+    await page.reload();
+    await expect(frameClips).toHaveCount(4);
+    const firstFrameBytes = await readFile(path.join(compositionFolder, "assets", "frame-1.webp"));
+    const secondFrameBytes = await readFile(path.join(compositionFolder, "assets", "frame-2.webp"));
+    expect(firstFrameBytes.equals(secondFrameBytes)).toBe(false);
+    await rm(path.join(scratchFolder, "hyperframes.json"));
+    await runCommand(process.execPath, [commandLineScript, "build", scratchFolder, "--hyperframes", "--out", outputFolder]);
+    await page.reload();
+    await expect(frameClips).toHaveCount(5);
+    await expect(compositionRoot).toHaveAttribute("data-duration", "25");
+    await expect(frameClips.nth(3)).toHaveAttribute("alt", "Hidden frame");
+    await runCommand(process.execPath, [commandLineScript, "build", repositoryFolder, "--hyperframes", "--out", outputFolder]);
+    await page.goto(pathToFileURL(path.join(outputFolder, "index.html")).href);
+    await expect(page.locator('a[href="./sample-talk/sample-talk-hyperframes/index.html"]')).toHaveCount(1);
+  } finally {
+    await rm(repositoryFolder, { recursive: true, force: true });
+    await rm(outputFolder, { recursive: true, force: true });
+  }
+});
 
 test("сборка: один HTML-файл листается без сервера, папка держит ELK и three.js отдельно, печатная версия, PDF по шагам и PowerPoint", async ({ page }) => {
   // Vite, the PDF and the PowerPoint export each drive Chrome through the whole demo.

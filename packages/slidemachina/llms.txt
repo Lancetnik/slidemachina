@@ -16,7 +16,7 @@ npx slidemachina shot 12 [folder]            # slide 12 as a PNG; 12.2 is after 
 npx slidemachina meme "this is fine"         # meme search; every result is printed with the command that inserts it
 ```
 
-- `build` flags: `--html` (one file), `--protected` (password from `SLIDEMACHINA_PASSWORD`), `--folder`, `--zip`, `--pdf`, `--steps` (PDF by steps), `--pptx`, `--no-hidden` (PDF and PowerPoint without hidden slides; by default they are in), `--out <folder>`.
+- `build` flags: `--html` (one file), `--protected` (password from `SLIDEMACHINA_PASSWORD`), `--folder`, `--zip`, `--pdf`, `--steps` (PDF by steps), `--pptx`, `--hyperframes` (a folder with timed still frames of slides and steps; optional `hyperframes.json` beside `index.tsx`: positive seconds in a `durations` array, one per frame; default 5 seconds; video, GIF and 3D are stills), `--no-hidden` (PDF, PowerPoint and HyperFrames without hidden slides; by default they are in), `--out <folder>`.
 - `shot` writes `slide-12.png` to the current folder; `--out file.png` writes elsewhere. Use it to check the layout by eye, not by reading code. PDF, covers and `shot` need Chrome installed.
 - Browser address: `#7` is slide 7, `#7.2` is after two steps, `?print` is the print view, `?overview` is the slide overview.
 

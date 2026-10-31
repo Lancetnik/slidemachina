@@ -22,6 +22,7 @@ npx slidemachina build --protected   # один файл под паролем �
 npx slidemachina build --folder      # папка для сайта, --zip — она же в архиве
 npx slidemachina build --pdf         # PDF, страница на слайд; с --steps — на каждый шаг
 npx slidemachina build --pptx        # PowerPoint: текст и схемы можно править, шаги — анимация
+npx slidemachina build --hyperframes # HyperFrames: кадры слайдов и шагов для видео
 ```
 
 Результат появится в `dist/`. Другую папку задают флагом `--out`.

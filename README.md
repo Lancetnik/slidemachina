@@ -221,7 +221,30 @@ In CI the flags add up: `slidemachina build --html --folder --pdf --pptx`.
 | `--folder`, `--zip` | A folder for a website, or the same folder zipped |
 | `--pdf`, `--steps` | PDF with a page per slide or per step |
 | `--pptx` | PowerPoint. Text, tables, code, pictures, diagram boxes and arrows are separate editable objects. Steps are click animations |
-| `--no-hidden` | PDF and PowerPoint without hidden slides. By default they are in |
+| `--hyperframes` | HyperFrames composition: a still frame per slide and step, with timing for video |
+| `--no-hidden` | PDF, PowerPoint and HyperFrames without hidden slides. By default they are in |
+
+### HyperFrames
+
+Build a [HyperFrames](https://github.com/heygen-com/hyperframes) composition from your presentation:
+
+```sh
+npx slidemachina build my-talk --hyperframes --no-hidden
+npx hyperframes preview dist/my-talk-hyperframes
+npx hyperframes render dist/my-talk-hyperframes
+```
+
+The output folder contains `index.html` and `assets/`. Each slide and each revealed step becomes a lossless WebP frame at the presentation's canvas size. The HTML declares the canvas dimensions and clip timings; HyperFrames can seek forward or backward and render the frames to video. No HyperFrames dependency is added to your presentation.
+
+Each frame lasts 5 seconds by default. To set the timing, put `hyperframes.json` next to `index.tsx` before building:
+
+```json
+{ "durations": [5, 2, 2, 8] }
+```
+
+One duration in seconds per frame, in presentation order, including the initial state before the first step. The array must match the frame count, and every duration must be positive and finite. The build reports the expected count if they differ. Hidden slides are included unless you pass `--no-hidden`.
+
+This export uses the print view: transitions are cut, video, GIF and 3D become still frames, and iframe backgrounds are omitted. Text and diagrams are part of the images. Add music, narration and other scenes in HyperFrames. Rebuilding replaces the output folder, so copy it before editing it there.
 
 ## Your own theme
 

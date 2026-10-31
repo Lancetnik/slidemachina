@@ -20,7 +20,7 @@ export type StepTitler = (shownTitle: string) => string;
 // A step may leave a message for after the spinner, such as why the Quick Look pictures are missing.
 type ChromeStep = { stepTitle: string; stepWork: () => Promise<(() => void) | void> };
 
-const singleFileVariants = new Set<BuildVariant>(["html", "protected", "pdf", "pdf-steps", "pptx"]);
+const singleFileVariants = new Set<BuildVariant>(["html", "protected", "pdf", "pdf-steps", "pptx", "hyperframes"]);
 const pdfVariantNames: BuildVariant[] = ["pdf", "pdf-steps"];
 const largeFileLimit = 50 * 1024 * 1024;
 
@@ -164,6 +164,16 @@ export async function buildPresentation(
         );
       }
       if (chosenVariants.includes("html")) copyFileSync(builtPage, outputPaths.html);
+      if (chosenVariants.includes("hyperframes")) {
+        const hyperframesFolder = path.join(temporaryFolder, "hyperframes");
+        await runBuildStep(
+          nameStepTitle(commandLineTexts.exportingHyperframes),
+          async () => (await import("./script-free-preview.ts")).exportHyperframes(builtPage, projectFolder, hyperframesFolder, printsHidden, sharedChrome),
+          isInteractive,
+        );
+        removeOldOutput(outputPaths.hyperframes);
+        cpSync(hyperframesFolder, outputPaths.hyperframes, { recursive: true });
+      }
       const chromeSteps = listChromeSteps(chosenVariants, builtPage, outputPaths, printsHidden, sharedChrome);
       // Pictures, PDF and PowerPoint take tabs of one Chrome at once: printing mostly waits while the export keeps the processor busy.
       if (chromeSteps.length > 0) {
@@ -192,5 +202,6 @@ export function namePresentationOutputs(outputFolder: string, projectName: strin
     pdf: path.join(outputFolder, `${projectName}.pdf`),
     "pdf-steps": path.join(outputFolder, `${projectName}-steps.pdf`),
     pptx: path.join(outputFolder, `${projectName}.pptx`),
+    hyperframes: path.join(outputFolder, `${projectName}-hyperframes`),
   };
 }

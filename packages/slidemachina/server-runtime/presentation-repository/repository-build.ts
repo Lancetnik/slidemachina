@@ -28,6 +28,7 @@ function nameRepositoryOutputs(presentationOutput: string, folderName: string): 
     pdf: path.join(presentationOutput, `${folderName}.pdf`),
     "pdf-steps": path.join(presentationOutput, `${folderName}-steps.pdf`),
     pptx: path.join(presentationOutput, `${folderName}.pptx`),
+    hyperframes: path.join(presentationOutput, `${folderName}-hyperframes`),
   };
 }
 
@@ -40,7 +41,7 @@ function describeBuiltCard(presentationCard: PresentationCard, chosenVariants: B
   const opensPage = chosenVariants.some((variantName) => pageVariantNames.includes(variantName));
   return {
     ...presentationCard,
-    pageAddress: opensPage ? toListAddress(outputPaths.html) : downloads[0]!.downloadAddress,
+    pageAddress: opensPage ? toListAddress(outputPaths.html) : downloads[0]?.downloadAddress ?? `${toListAddress(outputPaths.hyperframes)}/index.html`,
     isProtected: chosenVariants.includes("protected"),
     coverKind: hasCover ? "picture" : "none",
     coverAddress: toListAddress(coverFileName),

@@ -31,6 +31,7 @@ function readCommandLine() {
         steps: { type: "boolean" },
         hidden: { type: "boolean" },
         pptx: { type: "boolean" },
+        hyperframes: { type: "boolean" },
         out: { type: "string" },
         template: { type: "string" },
         gif: { type: "string" },
