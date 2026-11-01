@@ -1,7 +1,11 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
 import { escapeHtml } from "./html-escaping.ts";
-import type { MotionFrameSlot } from "./hyperframes-motion-options.ts";
+import type { CapturedMotionFrames, MotionFrame, PresentationState } from "./hyperframes-motion-types.ts";
+import type { CanvasSize } from "../../shared-between-runtimes/canvas-size.ts";
 
-export type MotionFrame = MotionFrameSlot & { assetName: string; frameKind: "hold" | "transition"; stateIndex: number; slideHeading: string };
+const motionPageTemplate = readFileSync(new URL("./hyperframes-motion.html", import.meta.url), "utf8");
+const templatePlaceholder = /\{\{(frameMarkup|frameWidth|frameHeight|totalDuration|frameRate|finalFrame)\}\}/g;
 
 export function composeNativeMotion(framePictures: MotionFrame[], frameWidth: number, frameHeight: number, frameRate: number): string {
   const finalPicture = framePictures.at(-1)!;
@@ -9,29 +13,24 @@ export function composeNativeMotion(framePictures: MotionFrame[], frameWidth: nu
   const frameMarkup = framePictures.map((framePicture, pictureIndex) =>
     `<img id="native-${pictureIndex}" class="clip" src="assets/${framePicture.assetName}" alt="${escapeHtml(framePicture.slideHeading)}" data-start="${framePicture.firstFrame / frameRate}" data-duration="${framePicture.frameCount / frameRate}" data-track-index="0" data-start-frame="${framePicture.firstFrame}" data-frame-count="${framePicture.frameCount}" data-state="${framePicture.stateIndex}" data-kind="${framePicture.frameKind}">`,
   ).join("\n");
-  return `<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><title>slidemachina</title>
-<style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}
-#presentation{position:relative;width:${frameWidth}px;height:${frameHeight}px}
-.clip{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.clip[hidden]{display:none}
-</style></head>
-<body>
-<div id="presentation" data-composition-id="presentation" data-start="0" data-duration="${totalFrames / frameRate}" data-fps="${frameRate}" data-width="${frameWidth}" data-height="${frameHeight}" data-no-timeline>
-${frameMarkup}
-</div>
-<script>
-function showPresentationFrame(currentSeconds) {
-  const currentFrame = Math.min(${totalFrames - 1}, Math.max(0, Math.floor(currentSeconds * ${frameRate} + 1e-6)));
-  for (const frameElement of document.querySelectorAll("#presentation > img.clip")) {
-    const firstFrame = Number(frameElement.dataset.startFrame);
-    frameElement.hidden = currentFrame < firstFrame || currentFrame >= firstFrame + Number(frameElement.dataset.frameCount);
-  }
+  const templateValues: Record<string, string | number> = {
+    frameMarkup, frameWidth, frameHeight, frameRate,
+    totalDuration: totalFrames / frameRate, finalFrame: totalFrames - 1,
+  };
+  return motionPageTemplate.replace(templatePlaceholder, (_, placeholderName: string) => String(templateValues[placeholderName]));
 }
-window.addEventListener("hf-seek", (seekEvent) => showPresentationFrame(seekEvent.detail.time));
-showPresentationFrame(0);
-</script>
-</body></html>`;
+
+export function writeMotionComposition(
+  outputFolder: string, canvasSize: CanvasSize, frameRate: number,
+  presentationStates: PresentationState[], capturedFrames: CapturedMotionFrames,
+) {
+  const { framePictures, capturedTransitions } = capturedFrames;
+  const { canvasWidth, canvasHeight } = canvasSize;
+  writeFileSync(path.join(outputFolder, "index.html"), composeNativeMotion(framePictures, canvasWidth, canvasHeight, frameRate));
+  const finalPicture = framePictures.at(-1)!;
+  writeFileSync(path.join(outputFolder, "motion.json"), JSON.stringify({
+    motion: "native", fps: frameRate, width: canvasWidth, height: canvasHeight,
+    totalFrames: finalPicture.firstFrame + finalPicture.frameCount,
+    states: presentationStates, frames: framePictures, transitions: capturedTransitions,
+  }, null, 2));
 }

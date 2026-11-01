@@ -1,5 +1,8 @@
 import type { Page } from "playwright-core";
+import { commandLineTexts } from "../command-line/command-line-texts.ts";
 import { waitForStillSlide } from "./cover-shooting.ts";
+
+const transitionWaitMilliseconds = 15_000;
 
 export type NativeMotionCapture = {
   isEnabled: boolean;
@@ -22,6 +25,7 @@ export function installMotionCapture() {
     isEnabled: false, isReady: false, isPositionReady: false,
     capturedAnimations: [], previousAnimations: new Set(), durationMilliseconds: 0, animationNames: [],
   };
+
   document.addEventListener("slidemachina-steps", (stepsEvent) => {
     const motionCapture = captureWindow.__slidemachinaMotionCapture;
     const slideElement = stepsEvent.target as HTMLElement;
@@ -32,6 +36,7 @@ export function installMotionCapture() {
       stepElement.hasAttribute("data-step-reached") === (Number(stepElement.dataset.stepIndex) <= stepNumber),
     );
   }, true);
+
   document.startViewTransition = (updateSlides) => {
     const viewTransition = startTransition(updateSlides);
     const motionCapture = captureWindow.__slidemachinaMotionCapture;
@@ -57,6 +62,43 @@ export function installMotionCapture() {
     }), (captureError: unknown) => { motionCapture.captureError = String(captureError); });
     return viewTransition;
   };
+}
+
+export async function changeMotionPosition(capturePage: Page, positionAddress: string, changesSlide: boolean) {
+  await capturePage.evaluate(({ positionAddress, changesSlide }) => {
+    window.__slidemachinaMotionCapture = {
+      isEnabled: changesSlide, isReady: false, isPositionReady: false, targetAddress: positionAddress,
+      capturedAnimations: [], previousAnimations: new Set(document.getAnimations()), durationMilliseconds: 0, animationNames: [],
+    };
+    location.hash = positionAddress;
+  }, { positionAddress, changesSlide });
+  if (!changesSlide) {
+    await capturePage.waitForFunction(() => window.__slidemachinaMotionCapture.isPositionReady);
+    await waitForStillSlide(capturePage, "[data-canvas] > [data-slide][data-current]");
+  }
+}
+
+export async function readMotionTransition(capturePage: Page) {
+  await capturePage.waitForFunction(() => {
+    const motionCapture = window.__slidemachinaMotionCapture;
+    return motionCapture.isReady || motionCapture.captureError;
+  }, undefined, { timeout: transitionWaitMilliseconds });
+  const transitionDetails = await capturePage.evaluate(() => {
+    const motionCapture = window.__slidemachinaMotionCapture;
+    return { captureError: motionCapture.captureError, durationMilliseconds: motionCapture.durationMilliseconds, animationNames: motionCapture.animationNames };
+  });
+  if (transitionDetails.captureError) throw new Error(commandLineTexts.failedHyperframesMotion(transitionDetails.captureError));
+  return transitionDetails;
+}
+
+export async function seekMotionTransition(capturePage: Page, frameFraction: number) {
+  await capturePage.evaluate((frameFraction) => {
+    const motionCapture = window.__slidemachinaMotionCapture;
+    for (const capturedAnimation of motionCapture.capturedAnimations) {
+      capturedAnimation.pause();
+      capturedAnimation.currentTime = frameFraction * motionCapture.durationMilliseconds;
+    }
+  }, frameFraction);
 }
 
 export async function finishMotionCapture(capturePage: Page) {
